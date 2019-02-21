@@ -68,7 +68,7 @@ You can edit  [`./src/tfapply.local.sh`](src/tfapply.local.sh) as you like. Any 
 
 > `./src/plan-destroy.local.sh`
 >
-> `./tfapply.local.sh`
+> `./src/tfapply.local.sh`
 
 ## Continuous Integration and Deployment
 

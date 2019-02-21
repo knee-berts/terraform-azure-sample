@@ -1,5 +1,5 @@
 provider "azurerm" {
-  # version = ">=1.12.0"
+  version         = ">=1.12.0"
   use_msi         = "${var.use_msi}"
   tenant_id       = "${var.tenant}"
   subscription_id = "${var.subscription}"

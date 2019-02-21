@@ -6,7 +6,7 @@ cd "$(dirname "$0")"
 ./plan.sh \
     -e dev \
     -g tf-master \
-    -a tfstatenkadsnf \
+    -a tfstatenje12345 \
     -m false \
     -r "true" \
     -p "dev.local.tfplan" \

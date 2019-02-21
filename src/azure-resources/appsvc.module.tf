@@ -1,6 +1,6 @@
-module "appsvc" {
-  source = "./appsvc"
+// module "appsvc" {
+//   source = "./appsvc"
+//   appsvc_location = "${var.appsvc_location}"
+//   name            = "${var.appsvc_name}"
+// }
 
-  appsvc_location = "${var.appsvc_location}"
-  name            = "${var.appsvc_name}"
-}

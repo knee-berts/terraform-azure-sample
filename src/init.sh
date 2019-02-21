@@ -34,9 +34,9 @@ fi
 set +e # errors don't matter
 
 # Create resource group
-if [ $(az group exists -n $RESOURCE_GROUP_NAME) = "false" ]   
+if [ $(az group exists -n $RESOURCE_GROUP_NAME -o tsv) = false ]   
 then
-    az group create --name $RESOURCE_GROUP_NAME --location australiaeast
+    az group create --name $RESOURCE_GROUP_NAME --location eastus2
 else 
     echo "Resource Group $RESOURCE_GROUP_NAME already exists"
 fi
