@@ -27,6 +27,8 @@ jobs:
   steps:
   - script: terraform fmt -check=true
     displayName: Check terraform is formatted correctly
+  - bash: pwd
+    displayName: pwd
   - bash: ls
     displayName: list files
   - bash: find . -name '*.sh' | while read p; do (>&2 bash -n $p) done 
