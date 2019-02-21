@@ -25,8 +25,8 @@ jobs:
   pool:
     name: "terraform-aci"
   steps:
-  # - script: terraform fmt -check=true
-  #   displayName: Check terraform is formatted correctly
+  - script: terraform fmt -check=false
+    displayName: Check terraform is formatted correctly
   - bash: pwd
     displayName: pwd
   - bash: ls
