@@ -101,9 +101,9 @@ variable "kubernetes_version" {
   default = "1.12.4"
 }
 
-variable "ssh_public_key" {
-  default = "~/.ssh/id_rsa.pub"
-}
+// variable "ssh_public_key" {
+//   default = "~/.ssh/id_rsa.pub"
+// }
 
 variable "dns_prefix" {
   default = "aks-demo"

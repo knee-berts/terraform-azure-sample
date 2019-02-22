@@ -26,7 +26,7 @@ module "azure" {
   server_app_secret            = "${var.server_app_secret}"
   agent_count                  = "${var.agent_count}"
   kubernetes_version           = "${var.kubernetes_version}"
-  ssh_public_key               = "${var.ssh_public_key}"
+  // ssh_public_key               = "${var.ssh_public_key}"
   dns_prefix                   = "${var.dns_prefix}"
   cluster_name                 = "${var.cluster_name}"
   aks_resource_group_name      = "${var.aks_resource_group_name}"
