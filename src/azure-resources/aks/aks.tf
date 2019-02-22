@@ -45,13 +45,13 @@ resource "azurerm_kubernetes_cluster" "aks" {
   dns_prefix          = "${var.dns_prefix}"
   kubernetes_version  = "${var.kubernetes_version}"
 
-  linux_profile {
-    admin_username = "theadmin"
+  // linux_profile {
+  //   admin_username = "theadmin"
 
-    ssh_key {
-      key_data = "${file("${var.ssh_public_key}")}"
-    }
-  }
+  //   ssh_key {
+  //     key_data = "${file("${var.ssh_public_key}")}"
+  //   }
+  // }
 
   agent_pool_profile {
     name            = "agentpool"
