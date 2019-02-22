@@ -62,7 +62,7 @@ CURRENT_PATH="$(dirname "$0")"
 . $CURRENT_PATH/init.sh -g $RESOURCE_GROUP_NAME -a $STORAGE_ACCOUNT_NAME -e $ENVIRONMENT
 
 # Pull down .tfvars to tmpfs from Azure Key Vault
-if [ $(hostname) == *_vs-agent_* ]; then az login -i; else echo "Using local token for az-cli"; fi
+if [[ $(hostname) == *"wk-caas"* ]]; then az login -i; else echo "Using local token for az-cli"; fi
 
 az keyvault secret show -n $TFVARS_SECRET --vault-name $KEYVAULT_NAME
 if [ $? -ne 0 ]
