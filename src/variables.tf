@@ -11,7 +11,7 @@ variable "subscription" {
 variable "use_msi" {
   type        = "string"
   description = "Use MSI to deploy resources"
-  default     = "false"
+  default     = "true"
 }
 
 variable "agent_hostname" {

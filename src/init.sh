@@ -57,7 +57,7 @@ ACCOUNT_KEY=$(az storage account keys list --resource-group $RESOURCE_GROUP_NAME
 
 # Create blob container
 az storage container create --name $ENVIRONMENT --account-name $STORAGE_ACCOUNT_NAME --account-key $ACCOUNT_KEY
-
+    
 set +e # errors matter again
 
 terraform init \

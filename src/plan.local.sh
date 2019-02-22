@@ -4,13 +4,25 @@ set -e
 cd "$(dirname "$0")"
 
 ./plan.sh \
-    -e dev \
-    -g tf-master \
     -a tfstatenje12345 \
-    -m false \
-    -r "true" \
-    -p "dev.local.tfplan" \
+    -e dev \
     -f "dev.plan.summary" \
-    -s "dev" \
+    -g tf-dev \
+    -m false \
+    -p "dev.local.tfplan" \
+    -r "true" \
+    -s "./terraform.tfvars" \
+    -t "tfvaraks" \
+    -v "tf-keyvault" \
+
+# ./plan.sh \
+#     -e dev \
+#     -g tf-master \
+#     -a tfstatenje12345 \
+#     -m false \
+#     -r "true" \
+#     -p "dev.local.tfplan" \
+#     -f "dev.plan.summary" \
+#     -s "dev" \
 
 # ./vault-outputs.sh -n "tf-dev" -g "tf-master"
