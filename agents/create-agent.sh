@@ -32,7 +32,7 @@ if [ -z "$ACCOUNT" ]; then
     exit 1
 fi
 
-IMAGE="flanagan89/tf-vsts-agent:latest"
+IMAGE="njeacr.azurecr.io/build-agent:0.11.11"
 
 ###############################################################
 # Script Begins                                               #
@@ -40,13 +40,15 @@ IMAGE="flanagan89/tf-vsts-agent:latest"
 
 # Create resource group
 echo "Creating resource group $RESOURCE_GROUP_NAME"
-az group create --name $RESOURCE_GROUP_NAME --location australiaeast
+az group create --name $RESOURCE_GROUP_NAME --location eastus2
 
 echo "Creating ACI $CONTAINER_NAME from image $IMAGE"
 
 # use this line if you just want to use the regular image
 az container create --resource-group $RESOURCE_GROUP_NAME --name $CONTAINER_NAME --assign-identity \
     --image $IMAGE \
+    --secrets FOO="BAR" \
+    --secrets-mount-path /mnt/secrets \
     --environment-variables VSTS_ACCOUNT=$ACCOUNT VSTS_TOKEN=$TOKEN VSTS_POOL=terraform-aci
 
 #get identity of container

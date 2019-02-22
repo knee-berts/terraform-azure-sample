@@ -40,7 +40,7 @@ jobs:
       azureSubscription: ado-terraform
       scriptLocation: 'scriptPath' # Options: inlineScript, scriptPath
       scriptPath: src/plan.sh
-      arguments: -e $(env) -g $(tfstate.resourcegroup) -a $(tfstate.storageaccountname) -f "$(Build.StagingDirectory)/tfplan.summary.txt"
+      arguments: -s "./terraform.tfvars" -t $(tfvars.secret) -v $(tfvars.keyvault) -e $(env) -g $(tfstate.resourcegroup) -a $(tfstate.storageaccountname) -f "$(Build.StagingDirectory)/tfplan.summary.txt"
   - script: rm -rf src/.terraform && cp -r src/ $(Build.StagingDirectory)
     displayName: Purge src/.terraform && copy src files to staging dir
   - task: PublishBuildArtifacts@1
