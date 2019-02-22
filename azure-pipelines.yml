@@ -34,6 +34,8 @@ jobs:
   - bash: find . -name '*.sh' | while read p; do (>&2 bash -n $p) done 
     displayName: Check bash scripts have correct syntax
     failOnStderr: true
+  - bash: az login -i
+    displayName: Login to Azure CLI with VMs Identity
   - task: AzureCLI@1
     displayName: Plan Changes
     inputs:
