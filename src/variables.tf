@@ -37,7 +37,7 @@ variable "dev_suffix" {
 # AKS VNet Configurations
 variable "vnet_name" {
   description = "Name of the vnet to create"
-  default     = "vnet-aks-eastus"
+  default     = "vnet-aks-eastus2"
 }
 
 variable "vnet_resource_group_name" {
