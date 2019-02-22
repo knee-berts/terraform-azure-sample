@@ -62,6 +62,7 @@ CURRENT_PATH="$(dirname "$0")"
 . $CURRENT_PATH/init.sh -g $RESOURCE_GROUP_NAME -a $STORAGE_ACCOUNT_NAME -e $ENVIRONMENT
 
 # Pull down .tfvars to tmpfs from Azure Key Vault
+az login -i
 az keyvault secret show -n $TFVARS_SECRET --vault-name $KEYVAULT_NAME
 if [ $? -ne 0 ]
 then
