@@ -90,7 +90,7 @@ variable "server_app_secret" {}
 
 # AKS Configurations
 variable "agent_count" {
-  default = 3
+  default = 1
 }
 
 variable "kubernetes_version" {
