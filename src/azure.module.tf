@@ -38,6 +38,6 @@ module "azure" {
   log_analytics_workspace_sku      = "${var.log_analytics_workspace_sku}"
 
   redis_name          = "${var.redis_name}"
-  resource_group_name = "${var.redis_resource_group_name}"
+  redis_resource_group_name = "${var.redis_resource_group_name}"
   location            = "${var.location}"
 }
