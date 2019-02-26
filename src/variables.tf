@@ -154,12 +154,8 @@ variable "redis_name" {
   default = "redis-demo"
 }
 
-variable "resource_group_name" {
+variable "redis_resource_group_name" {
   default = "rg-redis"
-}
-
-variable "location" {
-  default = "eastus2"
 }
 
 # Tags applied throughout
