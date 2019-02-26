@@ -17,9 +17,16 @@ resource "azurerm_redis_cache" "redis" {
   name                = "${var.redis_name}${random_id.randomId.hex}"
   location            = "${azurerm_resource_group.test.location}"
   resource_group_name = "${azurerm_resource_group.test.name}"
-  capacity            = 2
-  family              = "C"
-  sku_name            = "Standard"
+  capacity            = 1
+  family              = "P"
+  sku_name            = "Premium"
   enable_non_ssl_port = false
-  subnet_id = "${var.redis_subnet_id}"
+  shard_count         = 3
+  subnet_id           = "${var.redis_subnet_id}"
+
+  redis_configuration {
+    maxmemory_reserved = 2
+    maxmemory_delta    = 2
+    maxmemory_policy   = "allkeys-lru"
+  }
 }

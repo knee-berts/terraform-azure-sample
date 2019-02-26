@@ -150,6 +150,18 @@ variable "log_analytics_workspace_sku" {
   default = "PerGB2018"
 }
 
+variable "redis_name" {
+  default = "redis-demo"
+}
+
+variable "resource_group_name" {
+  default = "rg-redis"
+}
+
+variable "location" {
+  default = "eastus2"
+}
+
 # Tags applied throughout
 variable "tags" {
   description = "The tags to associate with your network and subnets."

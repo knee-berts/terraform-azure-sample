@@ -175,5 +175,3 @@ variable "tags" {
     purpose     = "aksdemo"
   }
 }
-
-
