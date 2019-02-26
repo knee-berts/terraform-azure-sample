@@ -1,3 +1,4 @@
+### Azure ARM Configs ###
 variable "use_msi" {
   type        = "string"
   description = "Use MSI to deploy resources"
@@ -23,6 +24,8 @@ variable "agent_hostname" {
   description = "Hostname of the terraform agent"
 }
 
+### App Services Configs ###
+
 variable "appsvc_location" {
   type        = "string"
   description = "Location of the azure resource group."
@@ -34,6 +37,8 @@ variable "appsvc_name" {
   description = "Name of the app service"
 }
 
+### Vnet Configs###
+
 variable "vnet_name" {
   description = "Name of the vnet to create"
   default     = "vnet-aks-eastus"
@@ -43,11 +48,6 @@ variable "vnet_resource_group_name" {
   description = "Default resource group name that the network will be created in."
   default     = "rg-aks-networking"
 }
-
-// variable "location" {
-//   description = "The location/region where the core network will be created. The full list of Azure regions can be found at https://azure.microsoft.com/regions"
-//   default     = "eastus2"
-// }
 
 variable "address_space" {
   description = "The address space that is used by the virtual network."
@@ -79,6 +79,8 @@ variable "dns_servers" {
     subnet3 = "nsgid3"
   }
 }*/
+
+### AKS Configs ###
 
 # Service Principal Configurations
 variable "client_id" {}
@@ -121,8 +123,6 @@ variable "location" {
   default = "eastus2"
 }
 
-// variable "agentpool_subnet_id" {}
-
 variable "network_plugin" {
   default = "azure"
 }
@@ -154,6 +154,16 @@ variable "log_analytics_workspace_sku" {
   default = "PerGB2018"
 }
 
+### Redis Configs ###
+
+variable "redis_name" {
+  default = "redis-demo"
+}
+
+variable "redis_resource_group_name" {
+  default = "rg-aks"
+}
+
 # Tags applied throughout 
 variable "tags" {
   description = "The tags to associate with AKS and dependencies."
@@ -165,3 +175,5 @@ variable "tags" {
     purpose     = "aksdemo"
   }
 }
+
+
