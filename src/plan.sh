@@ -61,6 +61,8 @@ set -x
 CURRENT_PATH="$(dirname "$0")"
 . $CURRENT_PATH/init.sh -g $RESOURCE_GROUP_NAME -a $STORAGE_ACCOUNT_NAME -e $ENVIRONMENT
 
+rm -rf $TFVARS_FILE
+
 # Pull down .tfvars to tmpfs from Azure Key Vault
 if [[ $(hostname) == *"wk-caas"* ]]; then az login -i; else echo "Using local token for az-cli"; fi
 
@@ -117,5 +119,5 @@ terraform plan -var-file=$TFVARS_FILE \
     -no-color \
     $TF_PARAMS \
     $CURRENT_PATH | tee $SUMMARY_FILE
-    
+
 set +e
