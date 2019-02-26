@@ -25,6 +25,8 @@ jobs:
   pool:
     name: "terraform-aci"
   steps:
+  - script: export TF_LOG=$(tf.loglevel)
+    displayName: Set Terraform log level
   - script: terraform fmt -check=false
     displayName: Check terraform is formatted correctly
   - bash: pwd

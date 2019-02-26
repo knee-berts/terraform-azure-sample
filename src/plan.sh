@@ -89,16 +89,6 @@ then
         -var "subscription=$SUBSCRIPTION_ID" \
         -var "agent_hostname=$(hostname)" \
         $CURRENT_PATH
-
-    # terraform refresh \
-    # -var "use_msi=$USE_MSI" \
-    # -var "tenant=$TENANT_ID" \
-    # -var "subscription=$SUBSCRIPTION_ID" \
-    # -var "environment=$ENVIRONMENT" \
-    # -var "dev_suffix=$DEV_SUFFIX" \
-    # -var "agent_hostname=$(hostname)" \
-    # $CURRENT_PATH
-
 fi
 
 set -e
@@ -110,16 +100,6 @@ terraform validate -var-file=$TFVARS_FILE \
     -var "subscription=$SUBSCRIPTION_ID" \
     -var "agent_hostname=$(hostname)" \
     $CURRENT_PATH
-
-# terraform validate \
-#     -var "use_msi=$USE_MSI" \
-#     -var "tenant=$TENANT_ID" \
-#     -var "subscription=$SUBSCRIPTION_ID" \
-#     -var "environment=$ENVIRONMENT" \
-#     -var "dev_suffix=$DEV_SUFFIX" \
-#     -var "agent_hostname=$(hostname)" \
-#     $CURRENT_PATH
-
 
 echo "Planning upgrade..."
 
@@ -137,17 +117,5 @@ terraform plan -var-file=$TFVARS_FILE \
     -no-color \
     $TF_PARAMS \
     $CURRENT_PATH | tee $SUMMARY_FILE
-
-# terraform plan \
-#     -out=$PLAN_PATH \
-#     -var "use_msi=$USE_MSI" \
-#     -var "tenant=$TENANT_ID" \
-#     -var "subscription=$SUBSCRIPTION_ID" \
-#     -var "environment=$ENVIRONMENT" \
-#     -var "dev_suffix=$DEV_SUFFIX" \
-#     -var "agent_hostname=$(hostname)" \
-#     -no-color \
-#     $TF_PARAMS \
-#     $CURRENT_PATH | tee $SUMMARY_FILE
-
+    
 set +e
