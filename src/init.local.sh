@@ -1,3 +1,3 @@
 
 cd "$(dirname "$0")"
-./init.sh -a "tfstatenje12345" -e "local-dev" -g "tf-dev"
+./init.sh -a "tfstatethgamble" -e "local-dev" -g "tf-dev" -s "tfkubesagain2" -c "tfkubecagain2" 

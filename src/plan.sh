@@ -79,6 +79,7 @@ fi
 SUBSCRIPTION_ID=$(az account show --query id --out tsv)
 TENANT_ID=$(az account show --query tenantId --out tsv)
 
+
 # refresh the infra if needed
 if [ "$REFRESH" = "true" ]
 then

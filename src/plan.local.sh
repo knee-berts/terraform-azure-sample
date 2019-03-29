@@ -4,7 +4,7 @@ set -e
 cd "$(dirname "$0")"
 
 ./plan.sh \
-    -a tfstatenje12345 \
+    -a tfstatethgamble \
     -e dev \
     -f "dev.plan.summary" \
     -g tf-dev \
@@ -12,7 +12,7 @@ cd "$(dirname "$0")"
     -p "dev.local.tfplan" \
     -r "true" \
     -s "./terraform.tfvars" \
-    -t "tfvaraks" \
+    -t "tfkubecagain" \
     -v "tf-keyvault" \
 
 # ./plan.sh \
