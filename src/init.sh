@@ -4,7 +4,7 @@ set -e
 # Script Parameters                                           #
 ###############################################################
 
-while getopts a:e:g:s:c: option
+while getopts a:e:g:s:c:v: option
 do
     case "${option}"
     in
@@ -13,6 +13,7 @@ do
     g) RESOURCE_GROUP_NAME=${OPTARG};;
     s) SERVICE_APP_NAME=${OPTARG};;
     c) CLIENT_APP_NAME=${OPTARG};;
+    v) KEYVAULT_NAME=${OPTARG};;
     esac
 done
 
@@ -33,11 +34,13 @@ if [ -z "$SERVICE_APP_NAME" ]; then
     exit 1
 fi
 if [ -z "$CLIENT_APP_NAME" ]; then
-    echo "-c is a required argument - Server Application Name"
+    echo "-c is a required argument - Client Application Name"
     exit 1
 fi
-
-KEYVAULT_NAME=tf-keyvault
+if [ -z "$KEYVAULT_NAME" ]; then
+    echo "-v is a required argument - KeyVault Name"
+    exit 1
+fi
 
 ###############################################################
 # Script Begins                                               #
@@ -62,13 +65,15 @@ else
     az storage account create --resource-group $RESOURCE_GROUP_NAME --name $STORAGE_ACCOUNT_NAME --sku Standard_LRS --encryption-services blob
 fi
 
-set +e # errors matter again
+set -e # errors matter again
 
 # Get storage account key
 ACCOUNT_KEY=$(az storage account keys list --resource-group $RESOURCE_GROUP_NAME --account-name $STORAGE_ACCOUNT_NAME --query [0].value -o tsv)
 
 # Create blob container
 az storage container create --name $ENVIRONMENT --account-name $STORAGE_ACCOUNT_NAME --account-key $ACCOUNT_KEY
+
+set +e # errors don't matter
 
 if [ $(az ad app list --display-name ${SERVICE_APP_NAME} | jq '. | length') -gt 0 ]
 then
@@ -170,8 +175,6 @@ fi
 
 TENANT_ID=$(az account show --query tenantId --out tsv)
 
-
-
 cat > ./temp.tfvars << EOF
     server_app_id="${SERVER_APP_ID}"
     server_app_secret="${SERVER_APP_SECRET}"
@@ -179,15 +182,21 @@ cat > ./temp.tfvars << EOF
     tenant_id="${TENANT_ID}"
 EOF
 
+
 # put secrets in keyvault
 az keyvault secret show -n ${CLIENT_APP_NAME} --vault-name ${KEYVAULT_NAME}
+# az keyvault secret show -n tfkubecagain2 --vault-name tf-keyvault
 if [ $? -ne 0 ]
 then
-    az keyvault create --name ${CLIENT_APP_NAME} --resource-group ${RESOURCE_GROUP_NAME} --location eastus2
+    az keyvault create --name ${KEYVAULT_NAME} --resource-group ${RESOURCE_GROUP_NAME} --location eastus2
+    # az keyvault create --name tf-keyvault- -resource-group tf-dev --location eastus2
     az keyvault secret set --vault-name ${KEYVAULT_NAME} --name ${CLIENT_APP_NAME} -f ./temp.tfvars
+    # az keyvault secret set --vault-name tf-keyvault234 --name tfkubecagain2 -f ./temp.tfvars
 else
     echo "Keyvault secret "${CLIENT_APP_NAME}" in Keyvault $KEYVAULT_NAME already exists -- please validate the values against temp.tfvars"
 fi
+
+set -e 
 
 terraform init \
     -backend-config="access_key=$ACCOUNT_KEY" \
