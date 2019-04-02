@@ -4,7 +4,7 @@ set -e
 ###############################################################
 EXECUTE=false
 # while getopts a:e:f:g:m:p:r:s:z: option
-while getopts a:e:f:g:m:p:r:s:t:v:z: option
+while getopts a:e:f:g:m:p:r:s:t:v:z:y:c: option
 do
     case "${option}"
     in
@@ -19,6 +19,8 @@ do
     t) TFVARS_SECRET=${OPTARG};;
     v) KEYVAULT_NAME=${OPTARG};;
     z) TF_PARAMS=${OPTARG};;
+    y) SERVICE_APP_NAME=${OPTARG};;
+    c) CLIENT_APP_NAME=${OPTARG};;
     esac
 done
 
@@ -53,13 +55,21 @@ if [ -z "$KEYVAULT_NAME" ]; then
     echo "-v is a required argument - Keyvault name"
     exit 1
 fi
+if [ -z "$SERVICE_APP_NAME" ]; then
+    echo "-y is a required argument - service name"
+    exit 1
+fi
+if [ -z "$CLIENT_APP_NAME" ]; then
+    echo "-c is a required argument - client name"
+    exit 1
+fi
 
 ###############################################################
 # Script Begins                                               #
 ###############################################################
 set -x
 CURRENT_PATH="$(dirname "$0")"
-. $CURRENT_PATH/init.sh -g $RESOURCE_GROUP_NAME -a $STORAGE_ACCOUNT_NAME -e $ENVIRONMENT
+. $CURRENT_PATH/init.sh -a $STORAGE_ACCOUNT_NAME -e $ENVIRONMENT -g $RESOURCE_GROUP_NAME -s $SERVICE_APP_NAME -c $CLIENT_APP_NAME -v $KEYVAULT_NAME
 
 rm -rf $TFVARS_FILE
 

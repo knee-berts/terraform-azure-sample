@@ -80,7 +80,7 @@ then
     echo "Service app ${SERVICE_APP_NAME} already exists"
 else
     SERVER_APP_URL="http://${SERVICE_APP_NAME}"
-    SERVER_APP_SECRET="$(cat /dev/urandom | tr -dc 'A-Za-z0-9!"#$%&()*+,-./:;<=>?@[\]^_`{|}~' | fold -w 32 | head -n 1)"
+    SERVER_APP_SECRET="$(cat /dev/urandom | tr -dc 'A-Za-z0-9!#$%&()*+,-./:;<=>?@[\]^_{|}~' | fold -w 32 | head -n 1)"
 
     # create the Azure Active Directory server application
     echo "Creating server application..."
@@ -162,6 +162,7 @@ EOF
     # create service principal for the client application
     az ad sp create --id ${CLIENT_APP_ID}
 
+
     # remove manifest-client.json
     # rm ./manifest-client.json
 
@@ -175,13 +176,23 @@ fi
 
 TENANT_ID=$(az account show --query tenantId --out tsv)
 
+if [ $(az ad sp list --display-name "${CLIENT_APP_NAME}-rbac" | jq '. | length') -gt 0 ]
+then
+    echo "RBAC client app ${CLIENT_APP_NAME}-rbac already exists"
+else
+    sp_vars=$(az ad sp create-for-rbac -n "${CLIENT_APP_NAME}-rbac" | jq '[.appId, .password]')
+    CLIENT_ID=$(echo $sp_vars |  jq -r '.[0]')
+    CLIENT_SECRET=$(echo $sp_vars |  jq -r '.[1]')
+fi
+
 cat > ./temp.tfvars << EOF
     server_app_id="${SERVER_APP_ID}"
     server_app_secret="${SERVER_APP_SECRET}"
     client_app_id="${CLIENT_APP_ID}"
+    client_id="${CLIENT_ID}"
+    client_secret="${CLIENT_SECRET}"
     tenant_id="${TENANT_ID}"
 EOF
-
 
 # put secrets in keyvault
 az keyvault secret show -n ${CLIENT_APP_NAME} --vault-name ${KEYVAULT_NAME}
