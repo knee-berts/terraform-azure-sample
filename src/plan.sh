@@ -3,6 +3,7 @@ set -e
 # Script Parameters                                           #
 ###############################################################
 EXECUTE=false
+
 # while getopts a:e:f:g:m:p:r:s:z: option
 while getopts a:e:f:g:m:p:r:s:t:v:z:y:c: option
 do
@@ -15,11 +16,11 @@ do
     m) USE_MSI=${OPTARG};;
     p) PLAN_PATH=${OPTARG};;
     r) REFRESH=${OPTARG};;
-    s) TFVARS_FILE=${OPTARG};;
+    y) TFVARS_FILE=${OPTARG};;
     t) TFVARS_SECRET=${OPTARG};;
     v) KEYVAULT_NAME=${OPTARG};;
     z) TF_PARAMS=${OPTARG};;
-    y) SERVICE_APP_NAME=${OPTARG};;
+    s) SERVICE_APP_NAME=${OPTARG};;
     c) CLIENT_APP_NAME=${OPTARG};;
     esac
 done
@@ -56,7 +57,7 @@ if [ -z "$KEYVAULT_NAME" ]; then
     exit 1
 fi
 if [ -z "$SERVICE_APP_NAME" ]; then
-    echo "-y is a required argument - service name"
+    echo "-s is a required argument - service name"
     exit 1
 fi
 if [ -z "$CLIENT_APP_NAME" ]; then

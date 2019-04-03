@@ -11,10 +11,10 @@ cd "$(dirname "$0")"
     -m false \
     -p "dev.local.tfplan" \
     -r "true" \
-    -s "./terraform.tfvars" \
+    -y "./terraform.tfvars" \
     -t "tfkubec4g-tg" \
     -v "tf-keyvault4g" \
-    -y "tfkubes4g-tg" \
+    -s "tfkubes4g-tg" \
     -c "tfkubec4g-tg"
 
 # ./plan.sh \

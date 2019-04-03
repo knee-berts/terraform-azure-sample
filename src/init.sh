@@ -4,7 +4,7 @@ set -e
 # Script Parameters                                           #
 ###############################################################
 
-while getopts a:e:g:s:c:v: option
+while getopts a:e:g:s:c:v:t: option
 do
     case "${option}"
     in
@@ -14,6 +14,7 @@ do
     s) SERVICE_APP_NAME=${OPTARG};;
     c) CLIENT_APP_NAME=${OPTARG};;
     v) KEYVAULT_NAME=${OPTARG};;
+    t) TFVARS_SECRET=${OPTARG};;
     esac
 done
 
@@ -39,6 +40,10 @@ if [ -z "$CLIENT_APP_NAME" ]; then
 fi
 if [ -z "$KEYVAULT_NAME" ]; then
     echo "-v is a required argument - KeyVault Name"
+    exit 1
+fi
+if [ -z "$TFVARS_SECRET" ]; then
+    echo "-t is a required argument - Tfvars secret"
     exit 1
 fi
 
@@ -164,7 +169,7 @@ EOF
 
 
     # remove manifest-client.json
-    # rm ./manifest-client.json
+    rm ./manifest-client.json
 
     # grant permissions to server application
     CLIENT_APP_RESOURCES_API_IDS=$(az ad app permission list --id $CLIENT_APP_ID --query [].resourceAppId --out tsv | xargs echo)
@@ -195,17 +200,20 @@ cat > ./temp.tfvars << EOF
 EOF
 
 # put secrets in keyvault
-az keyvault secret show -n ${CLIENT_APP_NAME} --vault-name ${KEYVAULT_NAME}
+az keyvault secret show -n ${TFVARS_SECRET} --vault-name ${KEYVAULT_NAME}
 # az keyvault secret show -n tfkubecagain2 --vault-name tf-keyvault
 if [ $? -ne 0 ]
 then
     az keyvault create --name ${KEYVAULT_NAME} --resource-group ${RESOURCE_GROUP_NAME} --location eastus2
     # az keyvault create --name tf-keyvault- -resource-group tf-dev --location eastus2
-    az keyvault secret set --vault-name ${KEYVAULT_NAME} --name ${CLIENT_APP_NAME} -f ./temp.tfvars
+    az keyvault secret set --vault-name ${KEYVAULT_NAME} --name ${TFVARS_SECRET} -f ./temp.tfvars
     # az keyvault secret set --vault-name tf-keyvault234 --name tfkubecagain2 -f ./temp.tfvars
 else
-    echo "Keyvault secret "${CLIENT_APP_NAME}" in Keyvault $KEYVAULT_NAME already exists -- please validate the values against temp.tfvars"
+    echo "Keyvault secret ${TFVARS_SECRET} in Keyvault $KEYVAULT_NAME already exists -- please validate the values against temp.tfvars"
 fi
+
+# remove temporary secrets file
+rm ./temp.tfvars
 
 set -e 
 
