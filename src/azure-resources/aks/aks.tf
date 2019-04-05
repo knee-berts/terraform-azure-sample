@@ -38,6 +38,7 @@ resource "azurerm_log_analytics_solution" "demo" {
   }
 }
 
+
 resource "azurerm_kubernetes_cluster" "aks" {
   name                = "${var.cluster_name}"
   location            = "${azurerm_resource_group.aks.location}"
