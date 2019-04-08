@@ -1,11 +1,18 @@
+
+module "ad" {
+  source = "./ad"
+  subscription         = "${var.subscription}"
+  cluster_name = "${var.cluster_name}"
+}
+
 module "aks" {
   source = "./aks"
 
   client_id          = "${var.client_id}"
   client_secret      = "${var.client_secret}"
-  client_app_id      = "${var.client_app_id}"
-  server_app_id      = "${var.server_app_id}"
-  server_app_secret  = "${var.server_app_secret}"
+  client_app_id      = "${module.ad.client_app_id}"
+  server_app_id      = "${module.ad.server_app_id}"
+  server_app_secret  = "${module.ad.server_app_secret}"
   agent_count        = "${var.agent_count}"
   kubernetes_version = "${var.kubernetes_version}"
 
@@ -24,3 +31,4 @@ module "aks" {
   log_analytics_workspace_sku      = "${var.log_analytics_workspace_sku}"
   tags                             = "${var.tags}"
 }
+

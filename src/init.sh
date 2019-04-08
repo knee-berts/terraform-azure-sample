@@ -78,107 +78,6 @@ ACCOUNT_KEY=$(az storage account keys list --resource-group $RESOURCE_GROUP_NAME
 # Create blob container
 az storage container create --name $ENVIRONMENT --account-name $STORAGE_ACCOUNT_NAME --account-key $ACCOUNT_KEY
 
-set +e # errors don't matter
-
-if [ $(az ad app list --display-name ${SERVICE_APP_NAME} | jq '. | length') -gt 0 ]
-then
-    echo "Service app ${SERVICE_APP_NAME} already exists"
-else
-    SERVER_APP_URL="http://${SERVICE_APP_NAME}"
-    SERVER_APP_SECRET="$(cat /dev/urandom | tr -dc 'A-Za-z0-9!#$%&()*+,-./:;<=>?@[\]^_{|}~' | fold -w 32 | head -n 1)"
-
-    # create the Azure Active Directory server application
-    echo "Creating server application..."
-    az ad app create --display-name ${SERVICE_APP_NAME} \
-        --password "${SERVER_APP_SECRET}" \
-        --identifier-uris "${SERVER_APP_URL}" \
-        --reply-urls "${SERVER_APP_URL}" \
-        --homepage "${SERVER_APP_URL}" \
-        --required-resource-accesses @manifest-server.json
-
-
-    SERVER_APP_ID=$(az ad app list --display-name ${SERVICE_APP_NAME} --output json | jq -r '.[0].appId')
-
-    SERVER_APP_OAUTH_ID=$(az ad app show --id ${SERVER_APP_ID} | jq -r '.oauth2Permissions[0]'.id)
-
-    # update the application
-    # open issue on this - https://github.com/Azure/azure-cli/issues/7283
-    # manually update via poratl
-    az ad app update --id ${SERVER_APP_ID} --set groupMembershipClaims=All
-
-    # create service principal for the server application
-    echo "Creating service principal for server application..."
-    az ad sp create --id ${SERVER_APP_ID}
-
-    # grant permissions to server application
-    echo "Granting permissions to the server application..."
-    SERVER_APP_API_IDS=$(az ad app permission list --id $SERVER_APP_ID --query [].resourceAppId --out tsv | xargs echo)
-    for RESOURCE_API_ID in $SERVER_APP_API_IDS;
-    do
-    if [ "$RESOURCE_API_ID" == "00000002-0000-0000-c000-000000000000" ]
-    then
-        az ad app permission grant --api $RESOURCE_API_ID --id $SERVER_APP_ID --scope "User.Read"
-    elif [ "$RESOURCE_API_ID" == "00000003-0000-0000-c000-000000000000" ]
-    then
-        az ad app permission grant --api $RESOURCE_API_ID --id $SERVER_APP_ID --scope "Directory.Read.All"
-    else
-        az ad app permission grant --api $RESOURCE_API_ID --id $SERVER_APP_ID --scope "user_impersonation"
-    fi
-    done
-
-    echo "The Azure Active Directory application has been created. You need to ask an Azure AD Administrator to go the Azure portal an click the Grant permissions button for this app."
-fi
-
-if [ $(az ad sp list --display-name ${CLIENT_APP_NAME} | jq '. | length') -gt 0 ]
-then 
-    echo "Client app ${CLIENT_APP_NAME} already exists"
-else
-    # Create Role
-    SUBSCRIPTION_ID=$(az account show --query id --out tsv)
-
-        # load environment variables
-    CLIENT_APP_NAME="${CLIENT_APP_NAME}"
-    CLIENT_APP_URL="http://${CLIENT_APP_NAME}"
-
-    # generate manifest for client application
-    cat > ./manifest-client.json << EOF
-[
-    {
-    "resourceAppId": "${SERVER_APP_ID}",
-    "resourceAccess": [
-        {
-        "id": "${SERVER_APP_OAUTH_ID}",
-        "type": "Scope"
-        }
-    ]
-    }
-]
-EOF
-
-    echo "client application creation"
-    az ad app create --display-name ${CLIENT_APP_NAME} \
-        --native-app \
-        --required-resource-accesses @manifest-client.json
-
-
-    CLIENT_APP_ID=$(az ad app list --display-name ${CLIENT_APP_NAME} --query [].appId -o tsv)
-
-    echo "creating sp for ${CLIENT_APP_ID}"
-    # create service principal for the client application
-    az ad sp create --id ${CLIENT_APP_ID}
-
-
-    # remove manifest-client.json
-    rm ./manifest-client.json
-
-    # grant permissions to server application
-    CLIENT_APP_RESOURCES_API_IDS=$(az ad app permission list --id $CLIENT_APP_ID --query [].resourceAppId --out tsv | xargs echo)
-    for RESOURCE_API_ID in $CLIENT_APP_RESOURCES_API_IDS;
-    do
-    az ad app permission grant --api $RESOURCE_API_ID --id $CLIENT_APP_ID
-    done
-fi
-
 TENANT_ID=$(az account show --query tenantId --out tsv)
 
 if [ $(az ad sp list --display-name "${CLIENT_APP_NAME}-rbac" | jq '. | length') -gt 0 ]
@@ -191,9 +90,6 @@ else
 fi
 
 cat > ./temp.tfvars << EOF
-    server_app_id="${SERVER_APP_ID}"
-    server_app_secret="${SERVER_APP_SECRET}"
-    client_app_id="${CLIENT_APP_ID}"
     client_id="${CLIENT_ID}"
     client_secret="${CLIENT_SECRET}"
     tenant_id="${TENANT_ID}"
