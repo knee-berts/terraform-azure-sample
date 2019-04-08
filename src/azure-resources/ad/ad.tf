@@ -26,25 +26,9 @@ resource "azuread_application" "svc" {
 }
 
 # External data source to get information about the AADserver AD application
-data "external" "AADserver_application" {
-  program = ["bash", "azure_ad.sh"]
-
-  query = {
-    # arbitrary map from strings to strings, passed to the external program as the data query
-    application_id = "${azuread_application.svc.application_id}"
-  }
-
-}
-
 # if this isssue is closed, replace with native functionality - https://github.com/terraform-providers/terraform-provider-azuread/issues/67
-resource "null_resource" "oauth" {
-  provisioner "local-exec" {
-    command = ")"
-  }
-}
-
 data "external" "oauth_id" {
-  program = ["bash", "azure_ad.sh"]
+  program = ["bash", "appOauth.sh"]
 
   query = {
     # arbitrary map from strings to strings, passed to the external program as the data query

@@ -4,11 +4,17 @@ variable "client_id" {}
 variable "client_secret" {}
 
 # AAD RBAC Congirurations
-variable "client_app_id" {}
+variable "client_app_id" {
+  default = "placeholder"
+}
 
-variable "server_app_id" {}
+variable "server_app_id" {
+  default = "placeholder"
+}
 
-variable "server_app_secret" {}
+variable "server_app_secret" {
+  default = "placeholder"
+}
 
 # AKS Configurations
 variable "agent_count" {

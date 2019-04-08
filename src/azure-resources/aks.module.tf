@@ -5,6 +5,7 @@ module "ad" {
   cluster_name = "${var.cluster_name}"
 }
 
+
 module "aks" {
   source = "./aks"
 
@@ -30,5 +31,6 @@ module "aks" {
   log_analytics_workspace_location = "${var.log_analytics_workspace_location}"
   log_analytics_workspace_sku      = "${var.log_analytics_workspace_sku}"
   tags                             = "${var.tags}"
+  dependencies = ["${module.ad.client_app_id}",]
 }
 

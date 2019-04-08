@@ -75,6 +75,7 @@ resource "azurerm_kubernetes_cluster" "aks" {
     client_id     = "${var.client_id}"
     client_secret = "${var.client_secret}"
   }
+  
   role_based_access_control {
     enabled = true
 
@@ -91,4 +92,14 @@ resource "azurerm_kubernetes_cluster" "aks" {
     }
   }
   tags = "${var.tags}"
+}
+
+variable "dependencies" {
+  type = "list"
+}
+
+resource "null_resource" "dependency_getter" {
+  provisioner "local-exec" {
+    command = "echo ${length(var.dependencies)}"
+  }
 }

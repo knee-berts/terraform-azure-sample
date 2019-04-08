@@ -1,4 +1,3 @@
-# comment this module to stop deploying this version
 module "azure" {
   source = "./azure-resources"
 
@@ -21,9 +20,6 @@ module "azure" {
 
   client_id                        = "${var.client_id}"
   client_secret                    = "${var.client_secret}"
-  client_app_id                    = "${var.client_app_id}"
-  server_app_id                    = "${var.server_app_id}"
-  server_app_secret                = "${var.server_app_secret}"
   agent_count                      = "${var.agent_count}"
   kubernetes_version               = "${var.kubernetes_version}"
   dns_prefix                       = "${var.dns_prefix}"
@@ -37,7 +33,7 @@ module "azure" {
   log_analytics_workspace_location = "${var.log_analytics_workspace_location}"
   log_analytics_workspace_sku      = "${var.log_analytics_workspace_sku}"
 
-  redis_name          = "${var.redis_name}"
-  redis_resource_group_name = "${var.redis_resource_group_name}"
+  # redis_name          = "${var.redis_name}"
+  # redis_resource_group_name = "${var.redis_resource_group_name}"
   location            = "${var.location}"
 }

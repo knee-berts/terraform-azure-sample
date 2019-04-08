@@ -70,7 +70,7 @@ fi
 ###############################################################
 set -x
 CURRENT_PATH="$(dirname "$0")"
-. $CURRENT_PATH/init.sh -a $STORAGE_ACCOUNT_NAME -e $ENVIRONMENT -g $RESOURCE_GROUP_NAME -s $SERVICE_APP_NAME -c $CLIENT_APP_NAME -v $KEYVAULT_NAME
+. $CURRENT_PATH/init.sh -a $STORAGE_ACCOUNT_NAME -e $ENVIRONMENT -g $RESOURCE_GROUP_NAME -s $SERVICE_APP_NAME -c $CLIENT_APP_NAME
 
 rm -rf $TFVARS_FILE
 
