@@ -4,13 +4,15 @@ set -e
 # Script Parameters                                           #
 ###############################################################
 
-while getopts a:e:g: option
+while getopts a:e:g:s:c: option
 do
     case "${option}"
     in
     a) STORAGE_ACCOUNT_NAME=${OPTARG};;
     e) ENVIRONMENT=${OPTARG};;
     g) RESOURCE_GROUP_NAME=${OPTARG};;
+    s) SERVICE_APP_NAME=${OPTARG};;
+    c) CLIENT_APP_NAME=${OPTARG};;
     esac
 done
 
@@ -24,6 +26,14 @@ if [ -z "$STORAGE_ACCOUNT_NAME" ]; then
 fi
 if [ -z "$ENVIRONMENT" ]; then
     echo "-e is a required argument - Environment (dev, prod)"
+    exit 1
+fi
+if [ -z "$SERVICE_APP_NAME" ]; then
+    echo "-s is a required argument - Server Application Name"
+    exit 1
+fi
+if [ -z "$CLIENT_APP_NAME" ]; then
+    echo "-c is a required argument - Client Application Name"
     exit 1
 fi
 
@@ -42,7 +52,7 @@ else
 fi
 
 # Create storage account
-az storage account show -n $STORAGE_ACCOUNT_NAME -g $RESOURCE_GROUP_NAME
+az storage account show -n $STORAGE_ACCOUNT_NAME -g $RESOURCE_GROUP_NAME > /dev/null
 if [ $? -eq 0 ]
 then
     echo "Storage account $STORAGE_ACCOUNT_NAME in resource group $RESOURCE_GROUP_NAME already exists"
@@ -50,15 +60,15 @@ else
     az storage account create --resource-group $RESOURCE_GROUP_NAME --name $STORAGE_ACCOUNT_NAME --sku Standard_LRS --encryption-services blob
 fi
 
-set +e
+set -e # errors matter again
 
 # Get storage account key
 ACCOUNT_KEY=$(az storage account keys list --resource-group $RESOURCE_GROUP_NAME --account-name $STORAGE_ACCOUNT_NAME --query [0].value -o tsv)
 
 # Create blob container
 az storage container create --name $ENVIRONMENT --account-name $STORAGE_ACCOUNT_NAME --account-key $ACCOUNT_KEY
-    
-set +e # errors matter again
+
+set -e 
 
 terraform init \
     -backend-config="access_key=$ACCOUNT_KEY" \

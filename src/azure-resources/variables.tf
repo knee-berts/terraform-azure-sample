@@ -87,12 +87,6 @@ variable "client_id" {}
 
 variable "client_secret" {}
 
-# AAD RBAC Congirurations
-variable "client_app_id" {}
-
-variable "server_app_id" {}
-
-variable "server_app_secret" {}
 
 # AKS Configurations
 variable "agent_count" {

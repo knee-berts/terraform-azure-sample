@@ -28,9 +28,28 @@ In this example, we will deploy an Azure Web App with Terraform and Azure Pipeli
  * [Azure DevOps](https://dev.azure.com/): Continuous Integration and Deployment
  * [Azure Web Apps](https://docs.microsoft.com/en-us/azure/app-service/app-service-web-overview) Application host
 
+## Authenticate Azure CLI
+
+> `az login`
+
+## Quickstart
+
+ The makefile in the project root directory can be used to get started locally.   Begin by authenticating to Azure (see below).  Afterwards, update the project name in the Makefile (first line).   From there you can run the following commands to have AKS deployed from your computer.
+
+ ```bash
+ make init
+ make plan
+ make apply
+ ```
+
+ You may need to adjust some of the service/app ad accounts, details can be found [here](https://docs.microsoft.com/en-us/azure/aks/aad-integration)
+
+ Current issue with az cli [details](https://github.com/Azure/azure-cli/issues/7283) 
+
 ## Get started locally
 
 All terraform commands can be run via bash scripts. Scripts ending in `.local.sh` are intended to be run on a developer's machine. In a CI/CD pipeline, `.local.sh` scripts should not be used.
+
 
 ### Running the shell
 
@@ -38,17 +57,13 @@ All terraform commands can be run via bash scripts. Scripts ending in `.local.sh
 
 In the root directory, run the above for a local shell with terraform, and Azure CLI installed. You can see the Dockerfile for this shell at [`docker/Dockerfile`](docker/Dockerfile)
 
-### Authenticate Azure CLI
 
-> `az login`
 
 ### Initialising Terraform
 
 > `./src/init.local.sh`
 
 You can edit [`src/init.local.sh`](src/init.local.sh) to suit your environment.
-
-You will also need some secrets, which you can place in the `.secrets/` directory.
 
 `init.local.sh` is a wrapper around `init.sh`, which initialises terraform with remote state in an Azure Storage account.
 
@@ -143,13 +158,9 @@ Set the following variables in your release pipeline
  * `tfstate.storageaccountname` : the name of the storage account for your terraform state
  * `environment` : i.e. dev, prod. not necessarily used but useful
 
-
 ## Local Secrets
 
 Most secrets should be pulled from Azure CLI at runtime. For secrets that cannot, create a `.secrets` directory in the root of the project.
 
  * `vststoken.secret` -> Personal Access Token for Azure DevOps (used by release agent) 
 
-## Final Thoughts
-
-Terraform is, in theory, awesome. However in practice it's immature, difficult and buggy. I love the idea, and don't get me wrong - the vision Hashicorp have shown in developing this tool is amazing. But issues abound, including resources not being deleted, resources accidentally being deleted, slow release of Azure features into terraform, weird bugs and more. For now I reccomend using other automation tools like Ansible or simply ARM templates and Azure CLI.

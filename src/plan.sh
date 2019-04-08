@@ -3,8 +3,9 @@ set -e
 # Script Parameters                                           #
 ###############################################################
 EXECUTE=false
+
 # while getopts a:e:f:g:m:p:r:s:z: option
-while getopts a:e:f:g:m:p:r:s:t:v:z: option
+while getopts a:e:f:g:m:p:r:s:t:v:z:y:c: option
 do
     case "${option}"
     in
@@ -15,10 +16,12 @@ do
     m) USE_MSI=${OPTARG};;
     p) PLAN_PATH=${OPTARG};;
     r) REFRESH=${OPTARG};;
-    s) TFVARS_FILE=${OPTARG};;
+    y) TFVARS_FILE=${OPTARG};;
     t) TFVARS_SECRET=${OPTARG};;
     v) KEYVAULT_NAME=${OPTARG};;
     z) TF_PARAMS=${OPTARG};;
+    s) SERVICE_APP_NAME=${OPTARG};;
+    c) CLIENT_APP_NAME=${OPTARG};;
     esac
 done
 
@@ -53,13 +56,21 @@ if [ -z "$KEYVAULT_NAME" ]; then
     echo "-v is a required argument - Keyvault name"
     exit 1
 fi
+if [ -z "$SERVICE_APP_NAME" ]; then
+    echo "-s is a required argument - service name"
+    exit 1
+fi
+if [ -z "$CLIENT_APP_NAME" ]; then
+    echo "-c is a required argument - client name"
+    exit 1
+fi
 
 ###############################################################
 # Script Begins                                               #
 ###############################################################
 set -x
 CURRENT_PATH="$(dirname "$0")"
-. $CURRENT_PATH/init.sh -g $RESOURCE_GROUP_NAME -a $STORAGE_ACCOUNT_NAME -e $ENVIRONMENT
+. $CURRENT_PATH/init.sh -a $STORAGE_ACCOUNT_NAME -e $ENVIRONMENT -g $RESOURCE_GROUP_NAME -s $SERVICE_APP_NAME -c $CLIENT_APP_NAME
 
 rm -rf $TFVARS_FILE
 
@@ -78,6 +89,7 @@ fi
 # get subscrption info
 SUBSCRIPTION_ID=$(az account show --query id --out tsv)
 TENANT_ID=$(az account show --query tenantId --out tsv)
+
 
 # refresh the infra if needed
 if [ "$REFRESH" = "true" ]
